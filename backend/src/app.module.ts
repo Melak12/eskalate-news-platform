@@ -17,7 +17,7 @@ import { APP_PIPE, APP_INTERCEPTOR  } from '@nestjs/core';
     PrismaModule,
     AuthModule,
     ArticleModule,
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({ global: true }),
   ],
   controllers: [AppController],
   providers: [AppService, {

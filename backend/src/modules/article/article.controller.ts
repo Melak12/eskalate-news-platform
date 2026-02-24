@@ -9,25 +9,58 @@ import {
   UseGuards,
   Request,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../../prisma/generated/client';
 import { BaseResponse } from '../../common/interfaces/response.interface';
+import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guard';
 
 @ApiTags('Articles')
 @Controller('articles')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@ApiBearerAuth()
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @Get()
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Get published news feed' })
+  @ApiResponse({ status: 200, description: 'Return paginated list of published articles.' })
+  findAll(@Query() filterDto: GetArticlesFilterDto): Promise<BaseResponse<any>> {
+    return this.articleService.findAll(filterDto);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @Roles(Role.AUTHOR)
+  @ApiOperation({ summary: 'Get all articles by current author (Author only)' })
+  @ApiResponse({ status: 200, description: 'Return all articles.' })
+  findMyArticles(@Request() req): Promise<BaseResponse<any>> {
+    return this.articleService.findMyArticles(req.user.sub);
+  }
+
+  @Get(':id')
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Read an article' })
+  @ApiResponse({ status: 200, description: 'Return article details.' })
+  @ApiResponse({ status: 404, description: 'Article not found.' })
+  async findOne(@Request() req, @Param('id') id: string): Promise<BaseResponse<any>> {
+    const user = req.user;
+    return this.articleService.findOne(id, user?.sub);
+  }
+
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
   @Roles(Role.AUTHOR)
   @ApiOperation({ summary: 'Create a new article (Author only)' })
   @ApiResponse({ status: 201, description: 'Article created successfully.' })
@@ -36,15 +69,9 @@ export class ArticleController {
     return this.articleService.create(req.user.sub, createArticleDto);
   }
 
-  @Get('me')
-  @Roles(Role.AUTHOR)
-  @ApiOperation({ summary: 'Get all articles by current author (Author only)' })
-  @ApiResponse({ status: 200, description: 'Return all articles.' })
-  findMyArticles(@Request() req): Promise<BaseResponse<any>> {
-    return this.articleService.findMyArticles(req.user.sub);
-  }
-
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
   @Roles(Role.AUTHOR)
   @ApiOperation({ summary: 'Update an article (Author only)' })
   @ApiResponse({ status: 200, description: 'Article updated successfully.' })
@@ -59,6 +86,8 @@ export class ArticleController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
   @Roles(Role.AUTHOR)
   @ApiOperation({ summary: 'Soft delete an article (Author only)' })
   @ApiResponse({ status: 200, description: 'Article deleted successfully.' })
@@ -70,8 +99,8 @@ export class ArticleController {
 
   @Patch(':id/restore')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
   @Roles(Role.AUTHOR)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Restore a soft-deleted article (Author only)' })
   @ApiResponse({ status: 200, description: 'Article restored successfully.' })
   @ApiResponse({ status: 403, description: 'Forbidden. Not the author.' })

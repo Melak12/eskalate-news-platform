@@ -26,7 +26,10 @@ async function bootstrap() {
     .setDescription('The Eskalate News Platform API description')
     .setVersion('1.0')
     .addTag('news')
-    .addBearerAuth()
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
   let document = SwaggerModule.createDocument(app, config);
 
