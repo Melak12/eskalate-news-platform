@@ -5,7 +5,9 @@ import { AuthModule } from '../auth/auth.module';
 import { ArticleEventListener } from './article.listener';
 
 @Module({
-  imports: [AuthModule],
+  imports: [
+    AuthModule,
+  ],
   controllers: [ArticleController],
   providers: [ArticleService, ArticleEventListener],
 })

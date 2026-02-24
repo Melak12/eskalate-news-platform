@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ZodValidationPipe, ZodSerializerInterceptor } from 'nestjs-zod';
 import { APP_PIPE, APP_INTERCEPTOR  } from '@nestjs/core';
+import { AnalyticsModule } from './core/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { APP_PIPE, APP_INTERCEPTOR  } from '@nestjs/core';
     PrismaModule,
     AuthModule,
     ArticleModule,
+    AnalyticsModule,
     EventEmitterModule.forRoot({ global: true }),
   ],
   controllers: [AppController],

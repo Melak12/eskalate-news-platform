@@ -13,40 +13,19 @@ export class ArticleEventListener {
   async handleArticleReadEvent(event: ArticleReadEvent) {
     try {
       this.logger.debug(
-        `Processing read for article ${event.articleId} by user ${event.userId || 'Guest'}`,
+        `Received read event for article ${event.articleId} by user ${event.userId || 'Guest'}`,
       );
 
-      // Create ReadLog
+      // 1. Create ReadLog immediately for audit trail
+      // Analytics aggregation is now handled by a nightly cron job.
       await this.prisma.readLog.create({
         data: {
           articleId: event.articleId,
           readerId: event.userId || null,
         },
       });
-
-      // Update Daily Analytics
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      await this.prisma.dailyAnalytics.upsert({
-        where: {
-          articleId_date: {
-            articleId: event.articleId,
-            date: today,
-          },
-        },
-        update: {
-          viewCount: {
-            increment: 1,
-          },
-        },
-        create: {
-          articleId: event.articleId,
-          date: today,
-          viewCount: 1,
-        },
-      });
-    } catch (error:any) {
+      
+    } catch (error: any) {
       this.logger.error(
         `Failed to process read event for article ${event.articleId}`,
         error.stack,
