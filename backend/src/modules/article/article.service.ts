@@ -260,7 +260,7 @@ export class ArticleService {
     };
   }
 
-  async findOne(id: string, userId?: string): Promise<BaseResponse<any>> {
+  async findOne(id: string, userId?: string, ipAddress?: string, userAgent?: string): Promise<BaseResponse<any>> {
     const article = await this.prisma.article.findUnique({
       where: { id },
       include: {
@@ -285,7 +285,7 @@ export class ArticleService {
     // Trigger read event (fire and forget)
     this.eventEmitter.emit(
       'article.read',
-      new ArticleReadEvent(id, userId)
+      new ArticleReadEvent(id, userId, ipAddress, userAgent)
     );
 
     return {

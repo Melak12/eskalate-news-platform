@@ -28,6 +28,7 @@ export type ReadLogMinAggregateOutputType = {
   id: string | null
   articleId: string | null
   readerId: string | null
+  ipAddress: string | null
   readAt: Date | null
 }
 
@@ -35,6 +36,7 @@ export type ReadLogMaxAggregateOutputType = {
   id: string | null
   articleId: string | null
   readerId: string | null
+  ipAddress: string | null
   readAt: Date | null
 }
 
@@ -42,6 +44,7 @@ export type ReadLogCountAggregateOutputType = {
   id: number
   articleId: number
   readerId: number
+  ipAddress: number
   readAt: number
   _all: number
 }
@@ -51,6 +54,7 @@ export type ReadLogMinAggregateInputType = {
   id?: true
   articleId?: true
   readerId?: true
+  ipAddress?: true
   readAt?: true
 }
 
@@ -58,6 +62,7 @@ export type ReadLogMaxAggregateInputType = {
   id?: true
   articleId?: true
   readerId?: true
+  ipAddress?: true
   readAt?: true
 }
 
@@ -65,6 +70,7 @@ export type ReadLogCountAggregateInputType = {
   id?: true
   articleId?: true
   readerId?: true
+  ipAddress?: true
   readAt?: true
   _all?: true
 }
@@ -145,6 +151,7 @@ export type ReadLogGroupByOutputType = {
   id: string
   articleId: string
   readerId: string | null
+  ipAddress: string | null
   readAt: Date
   _count: ReadLogCountAggregateOutputType | null
   _min: ReadLogMinAggregateOutputType | null
@@ -173,6 +180,7 @@ export type ReadLogWhereInput = {
   id?: Prisma.StringFilter<"ReadLog"> | string
   articleId?: Prisma.StringFilter<"ReadLog"> | string
   readerId?: Prisma.StringNullableFilter<"ReadLog"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"ReadLog"> | string | null
   readAt?: Prisma.DateTimeFilter<"ReadLog"> | Date | string
   article?: Prisma.XOR<Prisma.ArticleScalarRelationFilter, Prisma.ArticleWhereInput>
   reader?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -182,6 +190,7 @@ export type ReadLogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   articleId?: Prisma.SortOrder
   readerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrder
   article?: Prisma.ArticleOrderByWithRelationInput
   reader?: Prisma.UserOrderByWithRelationInput
@@ -194,6 +203,7 @@ export type ReadLogWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ReadLogWhereInput | Prisma.ReadLogWhereInput[]
   articleId?: Prisma.StringFilter<"ReadLog"> | string
   readerId?: Prisma.StringNullableFilter<"ReadLog"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"ReadLog"> | string | null
   readAt?: Prisma.DateTimeFilter<"ReadLog"> | Date | string
   article?: Prisma.XOR<Prisma.ArticleScalarRelationFilter, Prisma.ArticleWhereInput>
   reader?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -203,6 +213,7 @@ export type ReadLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   articleId?: Prisma.SortOrder
   readerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrder
   _count?: Prisma.ReadLogCountOrderByAggregateInput
   _max?: Prisma.ReadLogMaxOrderByAggregateInput
@@ -216,11 +227,13 @@ export type ReadLogScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ReadLog"> | string
   articleId?: Prisma.StringWithAggregatesFilter<"ReadLog"> | string
   readerId?: Prisma.StringNullableWithAggregatesFilter<"ReadLog"> | string | null
+  ipAddress?: Prisma.StringNullableWithAggregatesFilter<"ReadLog"> | string | null
   readAt?: Prisma.DateTimeWithAggregatesFilter<"ReadLog"> | Date | string
 }
 
 export type ReadLogCreateInput = {
   id?: string
+  ipAddress?: string | null
   readAt?: Date | string
   article: Prisma.ArticleCreateNestedOneWithoutReadLogsInput
   reader?: Prisma.UserCreateNestedOneWithoutReadLogsInput
@@ -230,11 +243,13 @@ export type ReadLogUncheckedCreateInput = {
   id?: string
   articleId: string
   readerId?: string | null
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
 export type ReadLogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   article?: Prisma.ArticleUpdateOneRequiredWithoutReadLogsNestedInput
   reader?: Prisma.UserUpdateOneWithoutReadLogsNestedInput
@@ -244,6 +259,7 @@ export type ReadLogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleId?: Prisma.StringFieldUpdateOperationsInput | string
   readerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -251,11 +267,13 @@ export type ReadLogCreateManyInput = {
   id?: string
   articleId: string
   readerId?: string | null
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
 export type ReadLogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -263,6 +281,7 @@ export type ReadLogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleId?: Prisma.StringFieldUpdateOperationsInput | string
   readerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -280,6 +299,7 @@ export type ReadLogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleId?: Prisma.SortOrder
   readerId?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
 }
 
@@ -287,6 +307,7 @@ export type ReadLogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleId?: Prisma.SortOrder
   readerId?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
 }
 
@@ -294,6 +315,7 @@ export type ReadLogMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleId?: Prisma.SortOrder
   readerId?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
 }
 
@@ -387,6 +409,7 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type ReadLogCreateWithoutReaderInput = {
   id?: string
+  ipAddress?: string | null
   readAt?: Date | string
   article: Prisma.ArticleCreateNestedOneWithoutReadLogsInput
 }
@@ -394,6 +417,7 @@ export type ReadLogCreateWithoutReaderInput = {
 export type ReadLogUncheckedCreateWithoutReaderInput = {
   id?: string
   articleId: string
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
@@ -430,11 +454,13 @@ export type ReadLogScalarWhereInput = {
   id?: Prisma.StringFilter<"ReadLog"> | string
   articleId?: Prisma.StringFilter<"ReadLog"> | string
   readerId?: Prisma.StringNullableFilter<"ReadLog"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"ReadLog"> | string | null
   readAt?: Prisma.DateTimeFilter<"ReadLog"> | Date | string
 }
 
 export type ReadLogCreateWithoutArticleInput = {
   id?: string
+  ipAddress?: string | null
   readAt?: Date | string
   reader?: Prisma.UserCreateNestedOneWithoutReadLogsInput
 }
@@ -442,6 +468,7 @@ export type ReadLogCreateWithoutArticleInput = {
 export type ReadLogUncheckedCreateWithoutArticleInput = {
   id?: string
   readerId?: string | null
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
@@ -474,11 +501,13 @@ export type ReadLogUpdateManyWithWhereWithoutArticleInput = {
 export type ReadLogCreateManyReaderInput = {
   id?: string
   articleId: string
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
 export type ReadLogUpdateWithoutReaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   article?: Prisma.ArticleUpdateOneRequiredWithoutReadLogsNestedInput
 }
@@ -486,23 +515,27 @@ export type ReadLogUpdateWithoutReaderInput = {
 export type ReadLogUncheckedUpdateWithoutReaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleId?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ReadLogUncheckedUpdateManyWithoutReaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleId?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ReadLogCreateManyArticleInput = {
   id?: string
   readerId?: string | null
+  ipAddress?: string | null
   readAt?: Date | string
 }
 
 export type ReadLogUpdateWithoutArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reader?: Prisma.UserUpdateOneWithoutReadLogsNestedInput
 }
@@ -510,12 +543,14 @@ export type ReadLogUpdateWithoutArticleInput = {
 export type ReadLogUncheckedUpdateWithoutArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   readerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ReadLogUncheckedUpdateManyWithoutArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   readerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   readAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -525,6 +560,7 @@ export type ReadLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   articleId?: boolean
   readerId?: boolean
+  ipAddress?: boolean
   readAt?: boolean
   article?: boolean | Prisma.ArticleDefaultArgs<ExtArgs>
   reader?: boolean | Prisma.ReadLog$readerArgs<ExtArgs>
@@ -534,6 +570,7 @@ export type ReadLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   articleId?: boolean
   readerId?: boolean
+  ipAddress?: boolean
   readAt?: boolean
   article?: boolean | Prisma.ArticleDefaultArgs<ExtArgs>
   reader?: boolean | Prisma.ReadLog$readerArgs<ExtArgs>
@@ -543,6 +580,7 @@ export type ReadLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   articleId?: boolean
   readerId?: boolean
+  ipAddress?: boolean
   readAt?: boolean
   article?: boolean | Prisma.ArticleDefaultArgs<ExtArgs>
   reader?: boolean | Prisma.ReadLog$readerArgs<ExtArgs>
@@ -552,10 +590,11 @@ export type ReadLogSelectScalar = {
   id?: boolean
   articleId?: boolean
   readerId?: boolean
+  ipAddress?: boolean
   readAt?: boolean
 }
 
-export type ReadLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "articleId" | "readerId" | "readAt", ExtArgs["result"]["readLog"]>
+export type ReadLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "articleId" | "readerId" | "ipAddress" | "readAt", ExtArgs["result"]["readLog"]>
 export type ReadLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   article?: boolean | Prisma.ArticleDefaultArgs<ExtArgs>
   reader?: boolean | Prisma.ReadLog$readerArgs<ExtArgs>
@@ -579,6 +618,7 @@ export type $ReadLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     articleId: string
     readerId: string | null
+    ipAddress: string | null
     readAt: Date
   }, ExtArgs["result"]["readLog"]>
   composites: {}
@@ -1008,6 +1048,7 @@ export interface ReadLogFieldRefs {
   readonly id: Prisma.FieldRef<"ReadLog", 'String'>
   readonly articleId: Prisma.FieldRef<"ReadLog", 'String'>
   readonly readerId: Prisma.FieldRef<"ReadLog", 'String'>
+  readonly ipAddress: Prisma.FieldRef<"ReadLog", 'String'>
   readonly readAt: Prisma.FieldRef<"ReadLog", 'DateTime'>
 }
     

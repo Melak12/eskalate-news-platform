@@ -774,6 +774,7 @@ export const ReadLogScalarFieldEnum = {
   id: 'id',
   articleId: 'articleId',
   readerId: 'readerId',
+  ipAddress: 'ipAddress',
   readAt: 'readAt'
 } as const
 

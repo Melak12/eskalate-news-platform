@@ -56,7 +56,9 @@ export class ArticleController {
   @ApiResponse({ status: 404, description: 'Article not found.' })
   async findOne(@Request() req, @Param('id') id: string): Promise<BaseResponse<any>> {
     const user = req.user;
-    return this.articleService.findOne(id, user?.sub);
+    const ip = req.ip || req.connection?.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    return this.articleService.findOne(id, user?.sub, ip, userAgent);
   }
 
   @Post()

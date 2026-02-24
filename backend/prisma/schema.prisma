@@ -59,6 +59,7 @@ model ReadLog {
   id        String   @id @default(uuid())
   articleId String
   readerId  String?
+  ipAddress String?
   readAt    DateTime @default(now())
 
   // Relations
