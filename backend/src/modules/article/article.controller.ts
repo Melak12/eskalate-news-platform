@@ -22,13 +22,13 @@ import { BaseResponse } from '../../common/interfaces/response.interface';
 
 @ApiTags('Articles')
 @Controller('articles')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard) // Apply guards specifically here or globally
-  @Roles('AUTHOR') // Use string or enum but ensure consistency. Roles decorator expects Role enum based on your RolesGuard
-  @ApiBearerAuth()
+  @Roles(Role.AUTHOR)
   @ApiOperation({ summary: 'Create a new article (Author only)' })
   @ApiResponse({ status: 201, description: 'Article created successfully.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
