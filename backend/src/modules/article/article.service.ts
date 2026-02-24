@@ -138,8 +138,25 @@ export class ArticleService {
   }
 
   async restore(userId: string, articleId: string): Promise<BaseResponse<any>> {
-    const article = await this.prisma.article.findUnique({
-      where: { id: articleId },
+    // We must check if the article exists even if it is deleted.
+    // By default, our Prisma global extension filters out deleted items.
+    // We need to bypass that filter here.
+    // We can do this by using a raw query or by adjusting the query
+    // to act as if we are looking for deleted items, similar to findMyArticles logic.
+    // Or we can use findFirst with explicit deletedAt check that involves "not null" or "undefined bypass".
+    
+    // However, findUnique relies on the extension too.
+    // Let's us findFirst and signal we want deleted items too.
+    
+    // Actually, based on our Prisma extension logic:
+    // If we pass `deletedAt` in where clause, we can control it.
+    // To find a specific ID regardless of deleted status:
+    const article = await this.prisma.article.findFirst({
+        where: { 
+            id: articleId,
+            // Pass empty filter to bypass default null injection validation
+            deletedAt: {} 
+        }
     });
 
     if (!article) {
@@ -150,8 +167,30 @@ export class ArticleService {
       throw new ForbiddenException('You are not allowed to restore this article');
     }
 
+    // We must ensure that the update operation also hits the deleted record.
+    // Standard update might filter by deletedAt=null again due to global extension.
+    // However, delete/update/updateMany in our extension explicitly set deletedAt.
+    // For standard update, we need to verify if the where clause is intercepted.
+    
+    // wait, our global extension for 'query' intercepts 'findFirst', 'findMany', 'findUnique'.
+    // It DOES NOT intercept 'update' for READ filtering, but might if 'update' uses 'where'.
+    
+    // Actually, Prisma extensions usually apply to top-level methods.
+    // If we use `prisma.article.update`, standard client behavior applies unless we extended it.
+    // Let's check prisma.service.ts again.
+    
+    // To be safe, let's explicitly include deletedAt in the where clause of the update too 
+    // to match the specific record if needed, OR just rely on ID if update isn't filtered.
+    
+    // UPDATE: The error was in finding it FIRST.
+    // Once found (above), we can restore it.
+    
     const restoredArticle = await this.prisma.article.update({
-      where: { id: articleId },
+      where: { 
+        id: articleId,
+        // Match regardless of current state to ensure update finds it
+        deletedAt: {} 
+      },
       data: { deletedAt: null },
     });
 

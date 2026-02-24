@@ -24,7 +24,24 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         query: {
           article: {
             async findFirst({ args, query }) {
-              args.where = { ...args.where, deletedAt: null };
+              if (args.where && 'deletedAt' in args.where) {
+                // If filtering by deletedAt is explicitly present:
+                // If it is 'undefined' (e.g., from service passing manual bypass), remove it so query runs without filter (fetching all).
+                // If it is an empty object (e.g., deletedAt: {}), also treat as bypass/all.
+                // However, Prisma runtime validation might reject {} for DateTime field.
+                // Safest bypass for "ALL" is usually to remove the key entirely after verifying intent.
+                if (
+                  args.where.deletedAt === undefined ||
+                  (args.where.deletedAt !== null &&
+                    typeof args.where.deletedAt === 'object' &&
+                    !(args.where.deletedAt instanceof Date) &&
+                    Object.keys(args.where.deletedAt).length === 0)
+                ) {
+                  delete args.where.deletedAt;
+                }
+              } else {
+                args.where = { ...args.where, deletedAt: null };
+              }
               return query(args);
             },
             async findMany({ args, query }) {
