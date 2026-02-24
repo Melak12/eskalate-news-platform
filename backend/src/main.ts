@@ -26,6 +26,17 @@ async function bootstrap() {
     .setDescription('The Eskalate News Platform API description')
     .setVersion('1.0')
     .addTag('news')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token (without "Bearer" prefix)',
+        in: 'header',
+      },
+      'bearer', // This is the default name that matches @ApiBearerAuth() in controllers
+    )
     .build();
   let document = SwaggerModule.createDocument(app, config);
 

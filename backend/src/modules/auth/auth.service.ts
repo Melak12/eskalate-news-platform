@@ -77,4 +77,23 @@ export class AuthService {
       Errors: null,
     };
   }
+
+  async getMe(userId: string): Promise<BaseResponse<any>> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const { password, ...result } = user;
+
+    return {
+      Success: true,
+      Message: 'User retrieved successfully',
+      Object: result,
+      Errors: null,
+    };
+  }
 }
