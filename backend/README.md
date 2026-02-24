@@ -1,5 +1,5 @@
 ## Description
- a production-ready RESTful Node.js (NestJS + TypeScript)
+ a production-ready RESTful News API using Node.js (NestJS + TypeScript)
 
 ## Project setup
 
