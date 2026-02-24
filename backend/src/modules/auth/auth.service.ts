@@ -1,10 +1,10 @@
 import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../../core/prisma/prisma.service';
+import { PrismaService } from '@core/prisma/prisma.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import * as argon2 from 'argon2';
-import { BaseResponse } from '../../common/interfaces/response.interface';
+import { BaseResponse } from '@common/interfaces/response.interface';
 
 @Injectable()
 export class AuthService {
