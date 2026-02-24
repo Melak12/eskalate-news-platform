@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ResponseInterceptor } from './core/interceptors/response.interceptor';
-import { GlobalExceptionFilter } from './core/filters/global-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
