@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ResponseInterceptor } from './core/interceptors/response.interceptor';
+import { GlobalExceptionFilter } from './core/filters/global-exception.filter';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
   // Setup logger
@@ -10,6 +13,15 @@ async function bootstrap() {
   // Initialize NestJs Application
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1'); 
+
+  // Apply Global Response Interceptor
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  
+  // Apply Global Exception Filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Apply Global Validation Pipe
+  app.useGlobalPipes(new ZodValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Eskalate News Platform API')
