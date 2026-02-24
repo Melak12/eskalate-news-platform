@@ -29,7 +29,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
             },
             async findMany({ args, query }) {
               if (args.where) {
-                if (args.where.deletedAt === undefined) {
+                // Determine if we should enforce soft delete check.
+                // If deletedAt is explicitly provided in the query (even as undefined/null), we respect it?
+                // No, standard usage is to omit it for active items.
+                // We introduce a special symbol or property to bypass?
+                // Or simply: If 'deletedAt' key exists in where object (even if value is strange), we skip injection.
+                // Service layer passes `deletedAt: { not: null }` for recycle bin, or something compatible.
+                // BUT for "ALL", we need to pass something that acts as identity.
+                
+                // Let's rely on 'deletedAt' property presence.
+                if (!('deletedAt' in args.where)) {
                   args.where.deletedAt = null;
                 }
               } else {

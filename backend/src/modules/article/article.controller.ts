@@ -16,6 +16,7 @@ import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
+import { GetMyArticlesFilterDto } from './dto/get-my-articles-filter.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -41,10 +42,10 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('access-token')
   @Roles(Role.AUTHOR)
-  @ApiOperation({ summary: 'Get all articles by current author (Author only)' })
-  @ApiResponse({ status: 200, description: 'Return all articles.' })
-  findMyArticles(@Request() req): Promise<BaseResponse<any>> {
-    return this.articleService.findMyArticles(req.user.sub);
+  @ApiOperation({ summary: 'List my articles (Authors only)' })
+  @ApiResponse({ status: 200, description: 'Return paginated list of articles.' })
+  findMyArticles(@Request() req, @Query() filter: GetMyArticlesFilterDto): Promise<BaseResponse<any>> {
+    return this.articleService.findMyArticles(req.user.sub, filter);
   }
 
   @Get(':id')

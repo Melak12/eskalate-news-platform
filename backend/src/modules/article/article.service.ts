@@ -4,6 +4,7 @@ import { PrismaService } from '../../core/prisma/prisma.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
+import { GetMyArticlesFilterDto } from './dto/get-my-articles-filter.dto';
 import { BaseResponse, PaginatedResponse } from '../../common/interfaces/response.interface';
 import { Prisma } from '../../../prisma/generated/client';
 import { ArticleReadEvent } from './events/article-read.event';
@@ -34,19 +35,51 @@ export class ArticleService {
     };
   }
 
-  async findMyArticles(userId: string): Promise<BaseResponse<any>> {
-    const articles = await this.prisma.article.findMany({
-      where: {
-        authorId: userId,
-        deletedAt: null, // Ensure we only get non-deleted articles
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findMyArticles(userId: string, filter?: GetMyArticlesFilterDto): Promise<PaginatedResponse<any>> {
+    const page = filter?.page || 1;
+    const limit = filter?.limit || 10;
+    const includeDeleted = filter?.includeDeleted || false;
+    const skip = (page - 1) * limit;
+
+    const where: any = {
+      authorId: userId,
+    };
+
+    if (includeDeleted) {
+      // Pass deletedAt: undefined explicitly.
+      // The 'in' operator in our PrismaService extension will see the key exists, so it won't inject 'deletedAt: null'.
+      // Prisma itself treats an undefined filter value as "no filter", fetching all records.
+      where.deletedAt = undefined; 
+    } else {
+      // Default behavior (handled by extension or explicit null)
+      where.deletedAt = null;
+    }
+
+    const [articles, total] = await Promise.all([
+      this.prisma.article.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      }),
+      this.prisma.article.count({ where }),
+    ]);
 
     return {
       Success: true,
       Message: 'Articles retrieved successfully',
       Object: articles,
+      PageNumber: page,
+      PageSize: limit,
+      TotalSize: total,
       Errors: null,
     };
   }
