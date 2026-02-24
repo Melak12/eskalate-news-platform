@@ -44,7 +44,7 @@ export class ArticleController {
     return this.articleService.findMyArticles(req.user.sub);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles(Role.AUTHOR)
   @ApiOperation({ summary: 'Update an article (Author only)' })
   @ApiResponse({ status: 200, description: 'Article updated successfully.' })
