@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './core/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ArticleModule } from './modules/article/article.module';
+import { AuthorModule } from './modules/author/author.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -18,6 +19,7 @@ import { AnalyticsModule } from './core/analytics/analytics.module';
     PrismaModule,
     AuthModule,
     ArticleModule,
+    AuthorModule,
     AnalyticsModule,
     EventEmitterModule.forRoot({ global: true }),
   ],
