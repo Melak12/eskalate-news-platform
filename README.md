@@ -1,5 +1,5 @@
 ## Description
- a production-ready RESTful News API using Node.js (NestJS + TypeScript)
+ A production-ready RESTful Node.js (NestJS + TypeScript) API inside the `/backend` directory. The architecture must include PostgreSQL, Prisma, Zod for validation, standard response models, soft delete integrity, non-blocking event mechanisms
 
 ## Project setup
 
