@@ -4,7 +4,8 @@ import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { ZodValidationPipe } from 'nestjs-zod';
+import { cleanupOpenApiDoc } from 'nestjs-zod';
+
 
 async function bootstrap() {
   // Setup logger
@@ -20,16 +21,16 @@ async function bootstrap() {
   // Apply Global Exception Filter
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // Apply Global Validation Pipe
-  app.useGlobalPipes(new ZodValidationPipe());
-
   const config = new DocumentBuilder()
     .setTitle('Eskalate News Platform API')
     .setDescription('The Eskalate News Platform API description')
     .setVersion('1.0')
     .addTag('news')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  let document = SwaggerModule.createDocument(app, config);
+
+  // Clean up the document using nestjs-zod's utility
+  document = cleanupOpenApiDoc(document);
   SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT ?? 3000;

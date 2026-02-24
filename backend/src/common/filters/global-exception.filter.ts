@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import { BaseResponse } from '../interfaces/response.interface';
 import { Prisma } from '../../../prisma/generated/client';
 import { ZodValidationException } from 'nestjs-zod';
+import { ZodError } from 'zod';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -26,30 +27,42 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (exception instanceof ZodValidationException) {
       status = HttpStatus.BAD_REQUEST;
       message = 'Validation failed';
-      // @ts-ignore
-      const zodError = exception.getZodError() as any;
-      errors = zodError.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`);
+      const zodError = exception.getZodError();
+      if (zodError instanceof ZodError) {
+        if (Array.isArray(zodError.issues)) {
+          errors = zodError.issues.map((err: any) => {
+            const path = err.path.join('.');
+            return `${path}: ${err.message}`;
+          });
+        }else {
+          errors = [zodError.message];
+        }
+      } else {
+        errors = ['Validation failed'];
+      }
+      console.log('Extracted Errors:', errors);
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
-      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-          if ('message' in exceptionResponse) {
-              const msg = (exceptionResponse as any).message;
-              if (Array.isArray(msg)) {
-                  // Ensure array of strings
-                  errors = msg.map(e => typeof e === 'string' ? e : JSON.stringify(e));
-                  message = 'Validation failed';
-              } else {
-                  message = msg as string;
-                  errors = [message];
-              }
-          }
-      } else {
-          message = exception.message;
-          errors = [message];
-      }
 
+      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+        if ('message' in exceptionResponse) {
+          const msg = (exceptionResponse as any).message;
+          if (Array.isArray(msg)) {
+            // Ensure array of strings
+            errors = msg.map((e) =>
+              typeof e === 'string' ? e : JSON.stringify(e),
+            );
+            message = 'Validation failed';
+          } else {
+            message = msg as string;
+            errors = [message];
+          }
+        }
+      } else {
+        message = exception.message;
+        errors = [message];
+      }
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle Prisma specific errors if needed
       if (exception.code === 'P2002') {
@@ -61,8 +74,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         message = 'Record not found';
         errors = [exception.message];
       } else {
-          message = 'Database error';
-          errors = [exception.message];
+        message = 'Database error';
+        errors = [exception.message];
       }
     } else if (exception instanceof Error) {
       message = exception.message;
