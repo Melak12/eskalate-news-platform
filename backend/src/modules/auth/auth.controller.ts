@@ -2,6 +2,7 @@ import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
+import { LoginDto } from './dto/login.dto';
 import { BaseResponse } from '../../common/interfaces/response.interface';
 
 @ApiTags('Auth')
@@ -16,5 +17,13 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Email already exists.' })
   async signup(@Body() signupDto: SignupDto): Promise<BaseResponse<any>> {
     return this.authService.signup(signupDto);
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login user' })
+  @ApiResponse({ status: 200, description: 'User successfully logged in.' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials.' })
+  async login(@Body() loginDto: LoginDto): Promise<BaseResponse<any>> {
+    return this.authService.login(loginDto);
   }
 }
